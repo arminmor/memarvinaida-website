@@ -431,11 +431,7 @@ export default function MemorialPage() {
             </p>
           )}
 
-          {notesLoading ? (
-            <p style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 14, color: "rgba(243,237,228,0.6)", margin: "40px 0 0" }}>
-              Loading memories...
-            </p>
-          ) : notes.length > 0 ? (
+          {!notesLoading && notes.length > 0 && (
             <div style={{ marginTop: 44 }}>
               <h4 style={{ fontFamily: "'Newsreader','Vazirmatn',serif", fontWeight: 400, fontSize: 20, margin: "0 0 20px", color: "#f3ede4" }}>
                 Shared Memories ({notes.length})
@@ -463,7 +459,7 @@ export default function MemorialPage() {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
       </section>
 
