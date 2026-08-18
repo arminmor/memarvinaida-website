@@ -40,6 +40,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Development Workflow
 
+- **Branch**: `/feature "description"` creates appropriately-prefixed branch (feature/, fix/, refactor/, etc.)
 - **Local dev**: `npm run dev` starts the dev server at http://localhost:3000
 - **Type checking**: TypeScript runs automatically; fix errors before committing
 - **Linting**: `npm run lint` checks code style
