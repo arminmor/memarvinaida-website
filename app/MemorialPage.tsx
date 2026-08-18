@@ -121,6 +121,7 @@ export default function MemorialPage() {
         const refreshRes = await fetch('/api/booklet/list');
         const refreshData = await refreshRes.json();
         setNotes(refreshData.notes || []);
+        setTimeout(() => setSubmitted(false), 2000);
       }
     } catch (error) {
       console.error('Failed to submit note:', error);
