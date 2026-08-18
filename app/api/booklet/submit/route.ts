@@ -1,4 +1,4 @@
-import { connectDB } from '@/lib/mongodb';
+import { connectDB, collectionName } from '@/lib/mongodb';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await connectDB();
-    const booklet = db.collection('booklet');
+    const booklet = db.collection(collectionName);
 
     const result = await booklet.insertOne({
       name,

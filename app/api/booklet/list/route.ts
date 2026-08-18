@@ -1,10 +1,10 @@
-import { connectDB } from '@/lib/mongodb';
+import { connectDB, collectionName } from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
     const db = await connectDB();
-    const booklet = db.collection('booklet');
+    const booklet = db.collection(collectionName);
 
     const notes = await booklet
       .find({})
