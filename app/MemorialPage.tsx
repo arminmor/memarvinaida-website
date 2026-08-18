@@ -3,11 +3,23 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { GALLERY_IMAGES, TRANSLATIONS, type Lang } from "@/lib/translations";
 
+interface BookletNote {
+  _id: string;
+  name: string;
+  relation: string;
+  message: string;
+  createdAt: string;
+}
+
 export default function MemorialPage() {
   const [lang, setLang] = useState<Lang>("en");
   const [formName, setFormName] = useState("");
+  const [formRelation, setFormRelation] = useState("");
   const [formNote, setFormNote] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [notes, setNotes] = useState<BookletNote[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
   const [spiralHeight, setSpiralHeight] = useState(4000);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -22,6 +34,23 @@ export default function MemorialPage() {
   }, []);
   const prevImage = useCallback(() => {
     setLightboxIndex((i) => (i === null ? null : (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length));
+  }, []);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        setNotesLoading(true);
+        const res = await fetch('/api/booklet/list');
+        const data = await res.json();
+        setNotes(data.notes || []);
+      } catch (error) {
+        console.error('Failed to fetch notes:', error);
+      } finally {
+        setNotesLoading(false);
+      }
+    };
+
+    fetchNotes();
   }, []);
 
   useEffect(() => {
@@ -66,6 +95,37 @@ export default function MemorialPage() {
     } else {
       el.muted = false;
       el.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formName.trim() || !formNote.trim()) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/booklet/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formName,
+          relation: formRelation,
+          message: formNote,
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+        setFormName("");
+        setFormRelation("");
+        setFormNote("");
+        const refreshRes = await fetch('/api/booklet/list');
+        const refreshData = await refreshRes.json();
+        setNotes(refreshData.notes || []);
+      }
+    } catch (error) {
+      console.error('Failed to submit note:', error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -355,21 +415,55 @@ export default function MemorialPage() {
             </div>
             <div>
               <label className="mem-label" htmlFor="mem-relation">{t.labelRelation}</label>
-              <input className="mem-input" id="mem-relation" placeholder={t.placeholderRelation} />
+              <input className="mem-input" id="mem-relation" placeholder={t.placeholderRelation} value={formRelation} onChange={(e) => setFormRelation(e.target.value)} />
             </div>
           </div>
           <div style={{ marginBottom: 20 }}>
             <label className="mem-label" htmlFor="mem-note">{t.labelMessage}</label>
             <textarea className="mem-input" id="mem-note" rows={4} placeholder={t.placeholderMessage} value={formNote} onChange={(e) => setFormNote(e.target.value)} />
           </div>
-          <button type="button" className="mem-btn-primary" onClick={() => setSubmitted(true)}>
-            {submitted ? t.submitLabelDone : t.submitLabel}
+          <button type="button" className="mem-btn-primary" onClick={handleSubmit} disabled={submitting || !formName.trim() || !formNote.trim()}>
+            {submitting ? t.submitLabel : submitted ? t.submitLabelDone : t.submitLabel}
           </button>
           {submitted && (
             <p style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 14, color: "#f16657", margin: "14px 0 0" }}>
               {t.thanks}
             </p>
           )}
+
+          {notesLoading ? (
+            <p style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 14, color: "rgba(243,237,228,0.6)", margin: "40px 0 0" }}>
+              Loading memories...
+            </p>
+          ) : notes.length > 0 ? (
+            <div style={{ marginTop: 44 }}>
+              <h4 style={{ fontFamily: "'Newsreader','Vazirmatn',serif", fontWeight: 400, fontSize: 20, margin: "0 0 20px", color: "#f3ede4" }}>
+                Shared Memories ({notes.length})
+              </h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }} className="mem-2col">
+                {notes.map((note) => (
+                  <div key={note._id} style={{ padding: 16, borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div style={{ fontFamily: "'Newsreader','Vazirmatn',serif", fontSize: 16, color: "#f3ede4", marginBottom: 4 }}>
+                      {note.name}
+                    </div>
+                    {note.relation && (
+                      <div style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 13, color: "rgba(243,237,228,0.5)", marginBottom: 10 }}>
+                        {note.relation}
+                      </div>
+                    )}
+                    <p style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 14, lineHeight: 1.6, color: "rgba(243,237,228,0.75)", margin: 0 }}>
+                      {note.message}
+                    </p>
+                    {note.createdAt && (
+                      <div style={{ fontFamily: "'Manrope','Vazirmatn',sans-serif", fontSize: 12, color: "rgba(243,237,228,0.4)", marginTop: 10 }}>
+                        {new Date(note.createdAt).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 
