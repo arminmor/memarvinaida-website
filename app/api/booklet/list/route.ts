@@ -13,9 +13,10 @@ export async function GET() {
 
     return NextResponse.json({ notes });
   } catch (error) {
-    console.error('Error fetching notes:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching notes:', message);
     return NextResponse.json(
-      { error: 'Failed to fetch notes' },
+      { error: 'Failed to fetch notes', details: message },
       { status: 500 }
     );
   }

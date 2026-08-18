@@ -25,9 +25,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, id: result.insertedId });
   } catch (error) {
-    console.error('Error submitting note:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Error submitting note:', message);
     return NextResponse.json(
-      { error: 'Failed to submit note' },
+      { error: 'Failed to submit note', details: message },
       { status: 500 }
     );
   }

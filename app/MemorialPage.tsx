@@ -113,6 +113,8 @@ export default function MemorialPage() {
         }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         setSubmitted(true);
         setFormName("");
@@ -122,6 +124,8 @@ export default function MemorialPage() {
         const refreshData = await refreshRes.json();
         setNotes(refreshData.notes || []);
         setTimeout(() => setSubmitted(false), 2000);
+      } else {
+        console.error('API error:', data);
       }
     } catch (error) {
       console.error('Failed to submit note:', error);
