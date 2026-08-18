@@ -4,15 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "payload generate:importmap --disable-transpile && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "payload": "payload",
+    "generate:types": "payload generate:types --disable-transpile",
+    "generate:importmap": "payload generate:importmap --disable-transpile"
   },
   "dependencies": {
-    "mongodb": "^7.5.0",
+    "@payloadcms/db-mongodb": "^3.88.0",
+    "@payloadcms/next": "^3.88.0",
+    "@payloadcms/richtext-lexical": "^3.88.0",
+    "@payloadcms/ui": "^3.88.0",
+    "graphql": "^16.14.2",
     "next": "16.3.1",
+    "payload": "^3.88.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@types/node": "^20",

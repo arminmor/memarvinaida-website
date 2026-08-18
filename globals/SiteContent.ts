@@ -1,0 +1,142 @@
+import type { GlobalConfig } from 'payload'
+
+const text = (name: string, required = false) => ({
+  name,
+  type: 'text' as const,
+  required,
+  localized: true,
+})
+
+const textarea = (name: string, required = false) => ({
+  name,
+  type: 'textarea' as const,
+  required,
+  localized: true,
+})
+
+export const SiteContent: GlobalConfig = {
+  slug: 'site-content',
+  fields: [
+    {
+      name: 'nav',
+      type: 'group',
+      fields: [
+        text('brand', true),
+        text('navAbout'),
+        text('navGallery'),
+        text('navMemory'),
+        text('navNews'),
+        text('navCta'),
+      ],
+    },
+    {
+      name: 'hero',
+      type: 'group',
+      fields: [
+        text('heroKicker'),
+        text('heroTitle'),
+        text('heroDates'),
+        textarea('heroIntro'),
+        text('heroCta1'),
+        text('heroCta2'),
+      ],
+    },
+    {
+      name: 'about',
+      type: 'group',
+      fields: [
+        text('aboutKicker'),
+        text('aboutTitle'),
+        textarea('aboutIntro'),
+        text('arvinName'),
+        textarea('arvinBio'),
+        text('aidaName'),
+        textarea('aidaBio'),
+        textarea('aboutLoss'),
+      ],
+    },
+    {
+      name: 'gallery',
+      type: 'group',
+      fields: [text('galleryKicker'), text('galleryTitle')],
+    },
+    {
+      name: 'memory',
+      type: 'group',
+      fields: [
+        text('memoryKicker'),
+        text('memoryTitle'),
+        textarea('memoryIntro'),
+        text('card1Tag'),
+        text('card1Title'),
+        textarea('card1Body'),
+        text('instagram'),
+        text('facebook'),
+        text('card2Tag'),
+        text('card2Title'),
+        textarea('card2Body'),
+        text('card2Cta'),
+        text('card3Tag'),
+        text('card3Title'),
+        textarea('card3Body'),
+        text('card3Cta'),
+        text('card4Tag'),
+        text('card4Title'),
+        textarea('card4Body'),
+        text('card4Cta'),
+        text('card5Tag'),
+        text('card5Title'),
+        textarea('card5Body'),
+        text('card5Cta1'),
+        text('card5Cta2'),
+      ],
+    },
+    {
+      name: 'booklet',
+      type: 'group',
+      fields: [
+        text('bookletTag'),
+        text('bookletTitle'),
+        text('bookletSubtitle'),
+        text('labelName'),
+        text('placeholderName'),
+        text('labelRelation'),
+        text('placeholderRelation'),
+        text('labelMessage'),
+        text('placeholderMessage'),
+        text('submitLabel'),
+        text('submitLabelDone'),
+        text('thanks'),
+      ],
+    },
+    {
+      name: 'news',
+      type: 'group',
+      fields: [
+        text('newsKicker'),
+        text('newsTitle'),
+        {
+          name: 'items',
+          type: 'array',
+          maxRows: 3,
+          fields: [text('tag'), text('date'), text('title'), textarea('body')],
+        },
+      ],
+    },
+    {
+      name: 'contact',
+      type: 'group',
+      fields: [
+        text('contactTag1'),
+        textarea('contactEtsLine'),
+        text('contactEtsContribute'),
+        text('contactEtsQuestions'),
+        text('contactTag2'),
+        text('contactAssocContact'),
+        text('contactAssocFacebook'),
+        text('contactAssocDonate'),
+      ],
+    },
+    textarea('footer'),
+  ],
+}
