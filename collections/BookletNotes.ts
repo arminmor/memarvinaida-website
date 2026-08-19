@@ -33,9 +33,13 @@ export const BookletNotes: CollectionConfig = {
     {
       name: 'approved',
       type: 'checkbox',
-      defaultValue: true,
+      defaultValue: false,
+      access: {
+        create: ({ req }) => Boolean(req.user),
+        update: ({ req }) => Boolean(req.user),
+      },
       admin: {
-        description: 'Uncheck to hide a note from the public memorial booklet',
+        description: 'Check to publish this note on the public memorial booklet',
       },
     },
   ],
