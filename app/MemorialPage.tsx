@@ -40,7 +40,7 @@ export default function MemorialPage() {
     const fetchNotes = async () => {
       try {
         setNotesLoading(true);
-        const res = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0');
+        const res = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0', { cache: 'no-store' });
         const data = await res.json();
         setNotes(data.docs || []);
       } catch (error) {
@@ -120,7 +120,7 @@ export default function MemorialPage() {
         setFormName("");
         setFormRelation("");
         setFormNote("");
-        const refreshRes = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0');
+        const refreshRes = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0', { cache: 'no-store' });
         const refreshData = await refreshRes.json();
         setNotes(refreshData.docs || []);
         setTimeout(() => setSubmitted(false), 2000);
