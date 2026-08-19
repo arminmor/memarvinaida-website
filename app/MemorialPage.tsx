@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { GALLERY_IMAGES, TRANSLATIONS, type Lang } from "@/lib/translations";
 
 interface BookletNote {
-  _id: string;
+  id: string;
   name: string;
   relation: string;
   message: string;
@@ -40,9 +40,9 @@ export default function MemorialPage() {
     const fetchNotes = async () => {
       try {
         setNotesLoading(true);
-        const res = await fetch('/api/booklet/list');
+        const res = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0', { cache: 'no-store' });
         const data = await res.json();
-        setNotes(data.notes || []);
+        setNotes(data.docs || []);
       } catch (error) {
         console.error('Failed to fetch notes:', error);
       } finally {
@@ -103,7 +103,7 @@ export default function MemorialPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/booklet/submit', {
+      const res = await fetch('/api/booklet-notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -120,9 +120,9 @@ export default function MemorialPage() {
         setFormName("");
         setFormRelation("");
         setFormNote("");
-        const refreshRes = await fetch('/api/booklet/list');
+        const refreshRes = await fetch('/api/booklet-notes?sort=-createdAt&limit=100&depth=0', { cache: 'no-store' });
         const refreshData = await refreshRes.json();
-        setNotes(refreshData.notes || []);
+        setNotes(refreshData.docs || []);
         setTimeout(() => setSubmitted(false), 2000);
       } else {
         console.error('API error:', data);
@@ -443,7 +443,7 @@ export default function MemorialPage() {
               </h4>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }} className="mem-2col">
                 {notes.map((note) => (
-                  <div key={note._id} style={{ padding: 16, borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div key={note.id} style={{ padding: 16, borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
                     <div style={{ fontFamily: "'Newsreader','Vazirmatn',serif", fontSize: 16, color: "#f3ede4", marginBottom: 4 }}>
                       {note.name}
                     </div>
